@@ -1,0 +1,22 @@
+library(caret)
+library(dslabs)
+library(dplyr)
+library(purrr)
+data(heights)
+y<-heights$sex
+x<-heights$height
+set.seed(2)
+test_index<-createDataPartition(y,times = 1,p=0.5,list=FALSE)
+train_set<-heights[-test_index,]
+test_set<-heights[test_index,]
+y_hat<-sample(c("Male","Female"),length(test_index),replace=TRUE) %>% factor(levels=levels(test_set$sex))
+mean(y_hat==test_set$sex)
+heights %>% group_by(sex) %>% summarize(mean(height),sd(height))
+y_hat<-ifelse(x>62,"Male","Female") %>% factor(levels=levels(test_set$sex))
+mean(y==y_hat)
+cutoff<-seq(61,70)
+accuracy<-map_dbl(cutoff,function(x){
+  y_hat<-ifelse(train_set$height>x,"Male","Female") %>% factor(levels=levels(test_set$sex))
+  mean(y_hat==train_set$sex)
+})
+plot(accuracy)
