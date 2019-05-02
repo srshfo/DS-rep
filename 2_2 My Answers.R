@@ -2,6 +2,7 @@ library(dslabs)
 library(dplyr)
 library(lubridate)
 library(caret)
+library(purrr)
 data(iris)
 iris <- iris[-which(iris$Species=='setosa'),]
 y <- factor(iris$Species)
